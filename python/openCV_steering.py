@@ -6,32 +6,32 @@ img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 height, width, colorlayers = img.shape
 img.shape
 
+# define needed variables
 horizontal_line = int(height * (3/4))
-
 blue = 2
 green = 1
 red = 0
-
-# find left and right sides of the track
-l_line = 0
-r_line = 0
 middle = int(width / 2)
 
-for x in range(int(width/2), 0, -1):
-  if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
-    l_line = x
-    break
-  continue
+# find left and right sides of the track
+def get_track_sides():
+    for x in range(int(width/2), 0, -1):
+      if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
+        l_line = x
+        break
+      continue
 
-for x in range(int(width/2), width):
-  if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
-    r_line = x
-    break
-  continue
+    for x in range(int(width/2), width):
+      if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
+        r_line = x
+        break
+      continue
+
+    return l_line, r_line
   
 # find the steering direction and distance to the middle of the track
 def get_turn():
-    global r_line, l_line
+    l_line, r_line = get_track_sides()
 
     mid_point = l_line + (r_line - l_line) / 2
     if mid_point > middle:
