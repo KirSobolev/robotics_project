@@ -1,19 +1,21 @@
-#middle point = 1/2 of horizontal resolution
 import cv2
 
-img = cv2.imread(r"C:\Users\Monit\Desktop\Coding shit\robotics_project\test_photo\2024-04-19-122447.jpg")
+# open image, define steering line
+img = cv2.imread(r"C:\Coding\robotics_project\python\test_photo\2024-04-19-122414.jpg")
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 height, width, colorlayers = img.shape
 img.shape
 
 horizontal_line = int(height * (3/4))
-cv2.line(img, (0, horizontal_line), (width, horizontal_line), (255, 0, 0), 3)
 
 blue = 2
 green = 1
 red = 0
 
+# find left and right sides of the track
 l_line = 0
+r_line = 0
+middle = int(width / 2)
 
 for x in range(int(width/2), 0, -1):
   if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
@@ -21,20 +23,13 @@ for x in range(int(width/2), 0, -1):
     break
   continue
 
-
-r_line = 0
-
 for x in range(int(width/2), width):
   if img[horizontal_line + 5, x][blue] >= 190 or img[horizontal_line + 5, x][green] >= 190 or img[horizontal_line + 5, x][red] >= 190:
     r_line = x
     break
   continue
   
-
-
-middle = int(width / 2)
-
-#compare the distance to each line from the middle point
+# find the steering direction and distance to the middle of the track
 def get_turn():
     global r_line, l_line
 
