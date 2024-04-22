@@ -1,7 +1,8 @@
 import cv2
+import math
 
 # open image, define steering line
-img = cv2.imread(r"C:\Coding\robotics_project\python\test_photo\2024-04-19-122414.jpg")
+img = cv2.imread(r"/home/levperda/robotics_project/robotics_project/python/test_photo/2024-04-19-122414.jpg")
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 height, width, colorlayers = img.shape
 img.shape
@@ -12,6 +13,8 @@ blue = 2
 green = 1
 red = 0
 middle = int(width / 2)
+car_line = height * (13/16)
+gap = car_line - horizontal_line
 
 # find left and right sides of the track
 def get_track_sides():
@@ -29,19 +32,25 @@ def get_track_sides():
 
     return l_line, r_line
   
-# find the steering direction and distance to the middle of the track
+# get the turning angle
 def get_turn():
-    l_line, r_line = get_track_sides()
+  l_line, r_line = get_track_sides()
+  mid_point = l_line + (r_line - l_line) / 2
+  
+  if mid_point > middle:
+     distance = mid_point - middle
+     angle_rad = math.atan(distance/gap)
+     angle = math.degrees(angle_rad)
+     return 90 - angle
+  
+  elif mid_point < middle:
+     distance = middle - mid_point
+     angle_rad = math.atan(distance/gap)
+     angle = math.degrees(angle_rad)
+     return 90 + angle
+  
+  else:
+     return 90
+  
 
-    mid_point = l_line + (r_line - l_line) / 2
-    if mid_point > middle:
-        return {"turn": "right",
-                "distance": mid_point - middle}
-    elif mid_point < middle:
-        return {"turn": "left",
-                "distance": middle - mid_point}
-    else:
-        return {"turn": "straight",
-                "distance": 0}
-    
 print(get_turn())
